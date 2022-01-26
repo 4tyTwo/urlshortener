@@ -1,0 +1,12 @@
+---
+version: "3.4"
+services:
+  shortener-db:
+    image: postgres:latest
+    container_name: shortener-db
+    environment:
+      - POSTGRES_USER=urlshortener
+      - POSTGRES_PASSWORD=hackme
+      - POSTGRES_DB=urlshortener
+    ports:
+      - 5432:5432
