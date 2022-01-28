@@ -1,14 +1,12 @@
 -- !Ups
+CREATE SEQUENCE url_mapping_v0_idx_seq START WITH 140608; -- 52^3, just so short urls will be at least 4 chars long
 CREATE TABLE url_mapping_v0(
-    id BIGSERIAL,
-    short_url TEXT UNIQUE NOT NULL,
+    id BIGINT NOT NULL DEFAULT nextval('url_mapping_v0_idx_seq'),
     long_url TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (long_url)
 );
-CREATE UNIQUE INDEX short_url_idx ON url_mapping_v0(short_url);
 
 -- !Downs
-
-DROP INDEX short_url_idx;
+DROP SEQUENCE url_mapping_v0_idx_seq;
 DROP TABLE url_mapping_v0;
