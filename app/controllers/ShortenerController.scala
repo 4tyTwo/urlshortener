@@ -1,42 +1,58 @@
 package controllers
 
 import javax.inject._
-import play.api.libs.json.{JsDefined, JsUndefined, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import service.Shortener
+import play.api.libs.json._
 
+import java.net.{MalformedURLException, URL}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val shortener: Shortener) extends BaseController {
-
-
-  def shortenUrl(): Action[AnyContent] = Action.async { request: Request[AnyContent] =>
-    val body: AnyContent          = request.body
-    val jsonBody: Option[JsValue] = body.asJson
-
-    jsonBody
-      .map { json =>
-        json \ "long_url" match {
-          case JsDefined(value) => {
-            val longUrl = value.as[String]
-            shortener.shortenUrl(longUrl) map { shortUrl =>
-              Ok(Json.toJson(shortUrl))
-            }
-          }
-          case _ => Future { BadRequest("Expecting long_url") }
+  
+  def shortenUrl(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[ShortenBody].fold(
+      error => Future {
+        val e = error.head
+        val where = e._1.toString()
+        val what = e._2.head.message
+        BadRequest(Json.toJson(Map(where -> what)))
+      },
+      body => {
+        shortener.shortenUrl(body.longUrl) map { shortUrl =>
+                        Ok(Json.toJson(shortUrl))
         }
       }
-      .getOrElse {
-        Future { BadRequest("Expecting application/json request body")}
-      }
+    )
   }
 
   def redirect(shortUrl: String): Action[AnyContent] = Action.async {
     shortener.redirect(shortUrl) map {
       case Some(value) => Redirect(value.longUrl, 302)
       case None => NotFound // TODO: static 404 page maybe
+    }
+  }
+}
+
+case class ShortenBody(longUrl: String)
+
+object ShortenBody {
+  implicit val shortenBodyReads: Reads[ShortenBody] = {
+    val longUrl = (JsPath \ "long_url").read[String].filter(JsonValidationError("long_url is not a valid url"))(isValidUrl)
+    longUrl.map(ShortenBody(_))
+  }
+
+  // Rudimentary, but should mimic tinyurl behaviour
+  def isValidUrl(url: String) = {
+    try {
+      new URL(url)
+      true
+    }
+    catch {
+      case _: MalformedURLException => false
     }
   }
 }
