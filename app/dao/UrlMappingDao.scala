@@ -18,8 +18,10 @@ class UrlMappingDao @Inject() (protected val dbConfigProvider: DatabaseConfigPro
     db.run(q.result.headOption)
   }
 
-  def insert(urlMapping: UrlMapping): Future[Int] = {
-    db.run(urlMappings += urlMapping)
+  def insert(longUrl: String): Future[UrlMapping] = {
+    db.run {
+      (urlMappings.map(_.longUrl) returning urlMappings) += longUrl
+    }
   }
 
   def getById(id: Long): Future[Option[UrlMapping]] = {
