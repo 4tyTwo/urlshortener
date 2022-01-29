@@ -15,8 +15,8 @@ class ShortenerController @Inject()(val controllerComponents: ControllerComponen
 
   def redirect(shortUrl: String): Action[AnyContent] = Action.async {
     shortener.redirect(shortUrl) map {
-      case Some(value) => Ok(Json.toJson(value.longUrl))
-      case None => Ok(Json.toJson("not found"))
+      case Some(value) => Redirect(value.longUrl, 302)
+      case None => NotFound // TODO: static 404 page maybe
     }
   }
 }
