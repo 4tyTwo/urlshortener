@@ -1,6 +1,7 @@
 package service
 
 import dao.UrlMappingDao
+import models.UrlMapping
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -8,12 +9,9 @@ import scala.concurrent.Future
 
 class Shortener @Inject() (urlMappingDao: UrlMappingDao) {
 
-  def redirect(shortUrl: String): Future[Option[String]] = {
+  def redirect(shortUrl: String): Future[Option[UrlMapping]] = {
     val id = B52Converter.decode(shortUrl)
-    urlMappingDao.getById(id).flatMap {
-      case Some(value) => Future { Some(value.longUrl) }
-      case None => Future { None }
-    }
+    urlMappingDao.getById(id)
   }
 
 

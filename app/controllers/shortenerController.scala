@@ -13,9 +13,9 @@ class ShortenerController @Inject()(val controllerComponents: ControllerComponen
     Ok(Json.toJson("Hello World"))
   }
 
-  def redirect(shortUrl: String) = Action.async {
+  def redirect(shortUrl: String): Action[AnyContent] = Action.async {
     shortener.redirect(shortUrl) map {
-      case Some(value) => Ok(Json.toJson(value))
+      case Some(value) => Ok(Json.toJson(value.longUrl))
       case None => Ok(Json.toJson("not found"))
     }
   }
