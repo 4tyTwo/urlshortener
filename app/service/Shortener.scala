@@ -9,20 +9,20 @@ import scala.concurrent.Future
 
 class Shortener @Inject() (urlMappingDao: UrlMappingDao) {
 
-  def redirect(shortUrl: String): Future[Option[UrlMapping]] = {
+  def lookup(shortUrl: String): Future[Option[UrlMapping]] = {
     val id = B52Converter.decode(shortUrl)
     urlMappingDao.getById(id)
   }
 
-  def shortenUrl(longUrl: String): Future[String] = {
+  def create(longUrl: String): Future[String] = {
     val r = urlMappingDao.getByLongUrl(longUrl)
     r flatMap {
       case Some(value) => Future { B52Converter.encode(value.id) }
-      case None => doShortenUrl(longUrl)
+      case None => shortenUrl(longUrl)
     }
   }
 
-  private def doShortenUrl(longUrl: String): Future[String] = {
+  private def shortenUrl(longUrl: String): Future[String] = {
     urlMappingDao.insert(longUrl) flatMap
       (r => Future {B52Converter.encode(r.id)})
   }

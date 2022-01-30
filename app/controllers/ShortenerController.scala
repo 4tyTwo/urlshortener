@@ -13,7 +13,7 @@ import scala.concurrent.Future
 @Singleton
 class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val shortener: Shortener) extends BaseController {
 
-  def shortenUrl(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def create(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     request.body.validate[ShortenBody].fold(
       error => Future {
         val e = error.head
@@ -22,15 +22,15 @@ class ShortenerController @Inject()(val controllerComponents: ControllerComponen
         BadRequest(Json.toJson(Map(where -> what)))
       },
       body => {
-        shortener.shortenUrl(body.longUrl) map { shortUrl =>
+        shortener.create(body.longUrl) map { shortUrl =>
                         Ok(Json.toJson(Map("short_url" -> shortUrl)))
         }
       }
     )
   }
 
-  def redirect(shortUrl: String): Action[AnyContent] = Action.async {
-    shortener.redirect(shortUrl) map {
+  def lookup(shortUrl: String): Action[AnyContent] = Action.async {
+    shortener.lookup(shortUrl) map {
       case Some(value) => Redirect(value.longUrl, 302)
       case None => NotFound // TODO: static 404 page maybe
     }
