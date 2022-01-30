@@ -23,7 +23,7 @@ class ShortenerController @Inject()(val controllerComponents: ControllerComponen
       },
       body => {
         shortener.create(body.longUrl) map { shortUrl =>
-                        Ok(Json.toJson(Map("short_url" -> shortUrl)))
+                        Created(Json.toJson(Map("short_url" -> shortUrl)))
         }
       }
     )
