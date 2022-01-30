@@ -3,16 +3,16 @@ package controllers
 import javax.inject._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
-import service.Shortener
 import play.api.libs.json._
+import registries.ComponentRegistry
 
 import java.net.{MalformedURLException, URL}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val shortener: Shortener) extends BaseController {
-
+class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val registry: ComponentRegistry) extends BaseController {
+  val shortener: registry.Shortener = registry.shortenerService
   def create(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     request.body.validate[ShortenBody].fold(
       error => Future {

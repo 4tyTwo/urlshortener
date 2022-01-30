@@ -1,32 +1,36 @@
 package service
 
-import dao.UrlMappingDao
+import dao.{UrlMappingDaoComponent}
 import models.UrlMapping
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Shortener @Inject() (urlMappingDao: UrlMappingDao) {
+trait ShortenerServiceComponent {
+  this: UrlMappingDaoComponent =>
+  val shortenerService: Shortener
 
-  def lookup(shortUrl: String): Future[Option[UrlMapping]] = {
-    val id = B52Converter.decode(shortUrl)
-    urlMappingDao.getById(id)
-  }
+  class Shortener {
 
-  def create(longUrl: String): Future[String] = {
-    urlMappingDao.getByLongUrl(longUrl) flatMap {
-      case Some(value) => Future { B52Converter.encode(value.id) }
-      case None => shortenUrl(longUrl)
+    def lookup(shortUrl: String): Future[Option[UrlMapping]] = {
+      val id = B52Converter.decode(shortUrl)
+      urlMappingDao.getById(id)
+    }
+
+    def create(longUrl: String): Future[String] = {
+      urlMappingDao.getByLongUrl(longUrl) flatMap {
+        case Some(value) => Future { B52Converter.encode(value.id) }
+        case None => shortenUrl(longUrl)
+      }
+    }
+
+    private def shortenUrl(longUrl: String): Future[String] = {
+      urlMappingDao.insert(longUrl) flatMap {
+        mapping => Future {B52Converter.encode(mapping.id)}
+      }
     }
   }
-
-  private def shortenUrl(longUrl: String): Future[String] = {
-    urlMappingDao.insert(longUrl) flatMap {
-      mapping => Future {B52Converter.encode(mapping.id)}
-    }
-  }
-}
 
   private object B52Converter {
 
@@ -53,3 +57,6 @@ class Shortener @Inject() (urlMappingDao: UrlMappingDao) {
       )._1 // TODO: replace indexOf
     }
   }
+}
+
+
