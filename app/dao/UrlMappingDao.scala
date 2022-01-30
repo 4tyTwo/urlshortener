@@ -14,18 +14,18 @@ class UrlMappingDao @Inject() (protected val dbConfigProvider: DatabaseConfigPro
   private val urlMappings = TableQuery[UrlMappingTable]
 
   def getByLongUrl(longUrl: String):Future[Option[UrlMapping]] = {
-    val q = urlMappings.filter(_.longUrl === longUrl)
+    val q = urlMappings.filter {_.longUrl === longUrl}
     db.run(q.result.headOption)
   }
 
   def insert(longUrl: String): Future[UrlMapping] = {
     db.run {
-      (urlMappings.map(_.longUrl) returning urlMappings) += longUrl
+      (urlMappings.map {_.longUrl} returning urlMappings) += longUrl
     }
   }
 
   def getById(id: Long): Future[Option[UrlMapping]] = {
-    val q = urlMappings.filter(_.id === id)
+    val q = urlMappings.filter {_.id === id}
     db.run(q.result.headOption)
   }
 

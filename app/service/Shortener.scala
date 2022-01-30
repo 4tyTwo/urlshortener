@@ -15,16 +15,16 @@ class Shortener @Inject() (urlMappingDao: UrlMappingDao) {
   }
 
   def create(longUrl: String): Future[String] = {
-    val r = urlMappingDao.getByLongUrl(longUrl)
-    r flatMap {
+    urlMappingDao.getByLongUrl(longUrl) flatMap {
       case Some(value) => Future { B52Converter.encode(value.id) }
       case None => shortenUrl(longUrl)
     }
   }
 
   private def shortenUrl(longUrl: String): Future[String] = {
-    urlMappingDao.insert(longUrl) flatMap
-      (r => Future {B52Converter.encode(r.id)})
+    urlMappingDao.insert(longUrl) flatMap {
+      mapping => Future {B52Converter.encode(mapping.id)}
+    }
   }
 }
 

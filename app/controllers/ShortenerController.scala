@@ -46,7 +46,7 @@ object ShortenBody {
   }
 
   // Rudimentary, but should mimic tinyurl behaviour
-  def isValidUrl(url: String) = {
+  def isValidUrl(url: String): Boolean = {
     try {
       new URL(url)
       true
