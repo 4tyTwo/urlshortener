@@ -18,3 +18,5 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies += "org.postgresql" % "postgresql" % "42.2.2"
+libraryDependencies += "org.mockito" % "mockito-scala_2.13" % "1.17.0" % Test
+
