@@ -1,0 +1,70 @@
+swagger: "2.0"
+info:
+  description: "This is a simple URL shortening service"
+  version: "1.0.0"
+  title: "Urlshortener"
+  contact:
+    email: "iigortoporkov@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:9000"
+basePath: "/"
+tags:
+  - name: "shortener"
+    description: "Url shortener API"
+schemes:
+  - "http"
+paths:
+  /{short_url}:
+    get:
+      tags:
+        - "shortener"
+      summary: "Follow a short link"
+      description: ""
+      operationId: "lookup"
+      parameters:
+        - in: "path"
+          name: "short_url"
+          description: "Short url returned by the service"
+          required: true
+          type: string
+      responses:
+        "302":
+          description: "Redirect to the associated long url"
+        "404":
+          description: "Not found"
+  /create:
+    post:
+      tags:
+        - "shortener"
+      summary: "Shorten a long url"
+      description: ""
+      operationId: "create"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: long_url
+          description: ""
+          required: true
+          schema:
+            $ref: '#/definitions/CreateBodyRequest'
+      responses:
+        "400":
+          description: "Bad request"
+        "201":
+          description: "Created"
+          schema:
+            $ref: '#/definitions/CreateBodyResponse'
+definitions:
+  CreateBodyRequest:
+    type: "object"
+    properties:
+      long_url:
+        type: "string"
+  CreateBodyResponse:
+    type: "object"
+    properties:
+      short_url:
+        type: "string"
