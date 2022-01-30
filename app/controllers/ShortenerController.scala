@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val shortener: Shortener) extends BaseController {
-  
+
   def shortenUrl(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     request.body.validate[ShortenBody].fold(
       error => Future {
@@ -23,7 +23,7 @@ class ShortenerController @Inject()(val controllerComponents: ControllerComponen
       },
       body => {
         shortener.shortenUrl(body.longUrl) map { shortUrl =>
-                        Ok(Json.toJson(shortUrl))
+                        Ok(Json.toJson(Map("short_url" -> shortUrl)))
         }
       }
     )
