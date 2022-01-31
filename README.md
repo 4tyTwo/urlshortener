@@ -1,5 +1,5 @@
 # Urlshortener
-A small app to shorter your tedious links
+A small app to shorten your tedious links
 
 ## Building & Running locally
 
