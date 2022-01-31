@@ -1,15 +1,14 @@
+import dao.UrlMappingDaoComponent
 import models.UrlMapping
-import org.mockito.ArgumentMatchers.{anyString, eq}
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.MockitoSugar.when
+import org.scalatest.concurrent.ScalaFutures.whenReady
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import service.ShortenerServiceComponent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import dao.UrlMappingDaoComponent
-import org.mockito.ArgumentMatchers
-import org.scalatest.concurrent.ScalaFutures.whenReady
-import service.ShortenerServiceComponent
 
 trait InsertNewTestEnv extends ShortenerServiceComponent with UrlMappingDaoComponent with MockitoSugar {
   val mockDAO: UrlMappingDao = mock[UrlMappingDao]

@@ -1,9 +1,8 @@
 package service
 
-import dao.{UrlMappingDaoComponent}
+import dao.UrlMappingDaoComponent
 import models.UrlMapping
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
