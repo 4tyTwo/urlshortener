@@ -5,7 +5,7 @@ import org.mockito.MockitoSugar.when
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import service.ShortenerServiceComponent
+import services.ShortenerServiceComponent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

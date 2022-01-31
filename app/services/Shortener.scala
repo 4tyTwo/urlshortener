@@ -1,4 +1,4 @@
-package service
+package services
 
 import dao.UrlMappingDaoComponent
 import models.UrlMapping

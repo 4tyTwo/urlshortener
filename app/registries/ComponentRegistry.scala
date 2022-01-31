@@ -2,7 +2,7 @@ package registries
 
 import dao.UrlMappingDaoComponent
 import play.api.db.slick.DatabaseConfigProvider
-import service.ShortenerServiceComponent
+import services.ShortenerServiceComponent
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
