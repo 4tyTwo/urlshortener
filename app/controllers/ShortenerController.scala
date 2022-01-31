@@ -7,11 +7,10 @@ import play.api.libs.json._
 import registries.ComponentRegistry
 
 import java.net.{MalformedURLException, URL}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val registry: ComponentRegistry) extends BaseController {
+class ShortenerController @Inject()(val controllerComponents: ControllerComponents, val registry: ComponentRegistry)(implicit ec: ExecutionContext) extends BaseController {
   val shortener: registry.Shortener = registry.shortenerService
   def create(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     request.body.validate[ShortenBody].fold(

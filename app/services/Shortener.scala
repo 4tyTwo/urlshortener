@@ -3,14 +3,13 @@ package services
 import dao.UrlMappingDaoComponent
 import models.UrlMapping
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ShortenerServiceComponent {
   this: UrlMappingDaoComponent =>
   val shortenerService: Shortener
 
-  class Shortener {
+  class Shortener(implicit ec: ExecutionContext) {
 
     def lookup(shortUrl: String): Future[Option[UrlMapping]] = {
       val id = B52Converter.decode(shortUrl)
