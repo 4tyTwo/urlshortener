@@ -4,5 +4,5 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /:shortUrl                  controllers.ShortenerController.lookup(shortUrl: String)
+GET     /$shortUrl<[a-zA-Z]+>                  controllers.ShortenerController.lookup(shortUrl: String)
 POST    /create                     controllers.ShortenerController.create()
