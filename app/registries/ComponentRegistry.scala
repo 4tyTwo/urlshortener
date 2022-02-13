@@ -1,13 +1,13 @@
 package registries
 
-import dao.UrlMappingDaoComponent
+import repos.UrlMappingRepoPg
 import play.api.db.slick.DatabaseConfigProvider
-import services.ShortenerServiceComponent
+import services.ShortenerServiceImpl
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ComponentRegistry @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends ShortenerServiceComponent with UrlMappingDaoComponent {
-  override val urlMappingDao = new UrlMappingDao(dbConfigProvider)
-  override val shortenerService = new Shortener()
+class ComponentRegistry @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext){
+  private val urlMappingRepo: repos.UrlMappingRepo = new UrlMappingRepoPg(dbConfigProvider)
+  val shortenerService = new ShortenerServiceImpl(urlMappingRepo)
 }
